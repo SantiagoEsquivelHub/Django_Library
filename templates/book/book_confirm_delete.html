@@ -1,13 +1,11 @@
-{% extends 'index.html' %}
 
-{% block body %}
-{% comment %} <div class="modal-dialog modals-default">
-    <div class="modal-content"> {% endcomment %}
+<div class="modal-dialog modals-default">
+    <div class="modal-content"> 
         <div class="modal-header">
             Deleting of {{ object }}
             <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        <form action="" method="post">
+        <form action="{% url 'author:delete_book' object.id%}" method="post">
 
         <div class="modal-body text-center">{% csrf_token %}
                 {% csrf_token %} 
@@ -17,6 +15,6 @@
             <button type="submit" class="btn btn-danger" data-align="right"><strong>Delete</strong></button>
         </div>
     </form>
-{% comment %}     </div>
-</div> {% endcomment %}
-{% endblock body %}
+    </div>
+</div>
+

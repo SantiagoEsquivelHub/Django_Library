@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DeleteView
+from django.views.generic import View, TemplateView, ListView, UpdateView, CreateView, DeleteView
 from django.urls import reverse_lazy
 from .forms import *
 from .models import *
@@ -35,6 +35,7 @@ class EditAuthor(UpdateView):
     form_class = AuthorForm
     success_url = reverse_lazy('author:list_author')
     
+    
         
     
 class DeleteAuthor(DeleteView):
@@ -48,11 +49,29 @@ class DeleteAuthor(DeleteView):
         author.save()
         return redirect('author:list_author')
 
-class ListBook(ListView):
+class ListBook(View):
     model = Book
+    form_class = BookForm
     template_name = 'book/list_book.html'
-    queryset = Book.objects.filter(state = True)
-    context_object_name = 'books'
+
+    def get_queryset(self):
+        return self.model.objects.filter(state = True)
+    
+    def get_context_data(self, **kwargs):
+        context = {}
+        context["books"] = self.get_queryset() 
+        context["form"] = self.form_class
+        return context
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_context_data())
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        
+        if form.is_valid:
+            form.save()
+            return redirect('author:list_book')
     
 class CreateBook(CreateView): 
     model = Book
@@ -62,9 +81,13 @@ class CreateBook(CreateView):
 
 class EditBook(UpdateView):
     model = Book
-    template_name = 'book/create_book.html'
+    template_name = 'book/edit_book.html'
     form_class = BookForm
     success_url = reverse_lazy('author:list_book')
+    
+    """ def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context """
     
 class DeleteBook(DeleteView):
     model = Book
