@@ -1,31 +1,10 @@
 from django.shortcuts import render, redirect
-from django.core.exceptions import ObjectDoesNotExist
-from .forms import AuthorForm
-from .models import Author
-from django.views.generic import View, TemplateView, ListView, UpdateView, CreateView, DeleteView
+from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DeleteView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
+from .forms import *
+from .models import *
 
 # Create your views here.
-
-""" def home(request):
-    return render(request, "index.html") """
-    
-""" def createAuthor(request):
-    if(request.method == 'POST'):
-        author_form = AuthorForm(request.POST)
-        if(author_form.is_valid()):
-            author_form.save() 
-            return redirect('libro:list_author')
-    else: 
-        author_form = AuthorForm()
-    return render(request, 'libro/create_author.html', {'author_form': author_form}) """
-
-""" def listAuthor(request):
-    authors = Author.objects.filter(state = True)
-    return render(request, 'libro/list_author.html', {'authors': authors}) """
-    
 """ 
     View: 
     1. dispatch = validate the request and choose the http method for the request
@@ -33,35 +12,6 @@ from django.contrib.auth.decorators import login_required
     3. options()
 """
 
-""" def editAuthor(request, id):
-    author_form = None
-    try:
-        author = Author.objects.get(id=id)
-        error = None
-        
-        if request.method == 'GET':
-            author_form = AuthorForm(instance=author)
-        else: 
-            author_form = AuthorForm(request.POST, instance=author)
-        
-            if(author_form.is_valid()):
-                author_form.save() 
-    
-            return redirect('index')
-    except ObjectDoesNotExist as e:
-        error = e
-    
-    return render(request, 'libro/create_author.html', {'author_form': author_form, 'error': error}) """
-    
-""" def deleteAuthor(request, id):
-    author = Author.objects.get(id=id)
-    if request.method == 'POST':
-        author.state = False
-        author.save()
-        return redirect('libro:list_author')
-    return render(request, 'libro/delete_author.html', {'author': author}) """
-    
-# @login_required
 class Home(TemplateView):
     template_name = 'index.html'
 
@@ -73,6 +23,7 @@ class CreateAuthor(CreateView):
 
 
 class ListAuthor(ListView):
+    model = Author
     template_name = 'author/list_author.html'
     queryset = Author.objects.filter(state = True)
     context_object_name = 'authors'
@@ -97,4 +48,30 @@ class DeleteAuthor(DeleteView):
         author.save()
         return redirect('author:list_author')
 
+class ListBook(ListView):
+    model = Book
+    template_name = 'book/list_book.html'
+    queryset = Book.objects.filter(state = True)
+    context_object_name = 'books'
     
+class CreateBook(CreateView): 
+    model = Book
+    form_class = BookForm
+    template_name = 'book/create_book.html'
+    success_url = reverse_lazy('author:list_book')
+
+class EditBook(UpdateView):
+    model = Book
+    template_name = 'book/create_book.html'
+    form_class = BookForm
+    success_url = reverse_lazy('author:list_book')
+    
+class DeleteBook(DeleteView):
+    model = Book
+    template_name = 'book/book_confirm_delete.html'
+    
+    def post(self, request, pk, *args, **kwargs):
+        book = Book.objects.get(id=pk)
+        book.state = False
+        book.save()
+        return redirect('author:list_book')

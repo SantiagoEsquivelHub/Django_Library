@@ -6,15 +6,14 @@ class AuthorForm(forms.ModelForm):
         model = Author
         fields = ['name', 'last_name', 'nacionality']
         
-"""   
-        Modify the attributes' labels
+        # Modify the attributes' labels
         labels = {
              'name': "Author's name",
              'last_name': "Author's last_name",
              'nacionality': "Author's nacionality",
          }
-         Modify the attributes' style
-         widget = {
+        #  Modify the attributes' style
+        widgets = {
              'name': forms.TextInput(
                  attrs= {
                      'class': 'form-control',
@@ -36,7 +35,7 @@ class AuthorForm(forms.ModelForm):
                      'id': 'nacionality'
                  }
                  )
-         } """
+         }
          
 # class ReservationForm(forms.ModelForm):
 #     def __init__(self, *args, **kwargs):
@@ -54,36 +53,36 @@ class AuthorForm(forms.ModelForm):
 
 #         return libro
 
-# class BookForm(forms.ModelForm):
+class BookForm(forms.ModelForm):
     
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['author_id'].queryset = Author.objects.filter(estado = True)
+     """ def __init__(self, *args, **kwargs):
+         super().__init__(*args, **kwargs)
+         self.fields['author_id'].queryset = Author.objects.filter(state = True) """
     
 
-#     class Meta:
-#         model = Book
-#         fields = ('titulo','autor','fecha_publicacion','descripcion','imagen','cantidad')
-#         label = {
-#             'titulo':'Título del libro',
-#             'autor_id': 'Autor(es) del Libro',
-#             'fecha_publicacion': 'Fecha de Publciación del Libro'
-#         }
-#         widgets = {
-#             'titulo': forms.TextInput(
-#                 attrs = {
-#                     'class': 'form-control',
-#                     'placeholder': 'Ingrese título de libro'
-#                 }
-#             ),
-#             'author_id': forms.SelectMultiple(
-#                 attrs = {
-#                     'class':'form-control'
-#                 }
-#             ),
-#             'publication_date': forms.SelectDateWidget(
-#                 attrs = {
-#                     'class': 'form-control'
-#                 }
-#             )
-#         }
+     class Meta:
+         model = Book
+         fields = ('title','author_id','publication_date', 'state')
+         labels = {
+             'title': "Book's title",
+             'author_id': "Book's Authors",
+             'publication_date': "Book's Publication Date"
+         }
+         widgets = {
+             'title': forms.TextInput(
+                 attrs = {
+                     'class': 'form-control',
+                     'placeholder': 'Enter the title of book'
+                 }
+             ),
+             'author_id': forms.SelectMultiple(
+                 attrs = {
+                     'class':'form-control'
+                 }
+             ),
+             'publication_date': forms.SelectDateWidget(
+                 attrs = {
+                     'class': 'form-control'
+                 }
+             )
+         }

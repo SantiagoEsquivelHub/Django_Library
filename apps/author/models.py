@@ -23,6 +23,7 @@ class Book(models.Model):
     title = models.CharField('title', max_length=255, blank=False, null=False)
     publication_date = models.DateField('Publication date', blank=False, null=False)
     author_id = models.ManyToManyField(Author)
+    state = models.BooleanField('state', default=True)
     creation_date = models.DateField('Creation date', auto_now=True, auto_now_add=False)
     
     class Meta:
