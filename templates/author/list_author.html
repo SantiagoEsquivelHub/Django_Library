@@ -1,0 +1,90 @@
+
+
+{% extends 'index.html' %}
+{% load static %}
+{% block titulo %}
+Biblioteca.dev | Authors list
+{% endblock titulo %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lib/datatable/dataTables.bootstrap.min.css' %}">
+{% endblock extra_css %}
+{% block body %}
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-8">
+        <strong class="card-title">Authors list</strong>
+      </div>
+      <div class="col-md-4">
+        <a type="button" class="btn btn-primary" href="{% url 'author:create_author' %}">
+          Register an Author</a>
+      </div>
+    </div>
+
+  </div>
+  <div class="table-stats order-table ov-h">
+        {% if authors %}
+        <table id="tabla_authors" class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Last name</th>
+            <th>Nacionality</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for author in authors %}
+        <tr>
+            <td>{{author.id}}</td>
+            <td>{{author.name}}</td>
+            <td>{{author.last_name}}</td>
+            <td>{{author.nacionality}}</td>
+            <td>
+                <a type="button" class="btn btn-primary" href="{% url 'author:edit_author'  author.id%}">Edit</a>
+                <a type="button" class="btn btn-danger" href="{% url 'author:delete_author' author.id %}">Delete</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+    
+{% else %}
+   {% comment %}  <h2>Does not exist registered authors</h2>
+    <button>  
+        <a href="{% url 'author:create_author' %}">Create</a>
+    </button> {% endcomment %}
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <strong class="card-title">Does not exist registered authors </strong>
+          </div> 
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="abrir_modal_creacion('{% url 'author:create_author' %}');">
+                  Register an Author</button>
+              </div>
+      </div>
+  </div>
+{% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal fade" id="creacion" role="dialog">
+
+</div>
+<div class="modal fade" id="edicion" role="dialog">
+
+</div>
+<div class="modal fade" id="eliminacion" role="dialog">
+
+</div>
+
+
+{% endblock body %}
+{% block extrajs %}
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'js/libro/libro.js' %}"></script>
+{% endblock extrajs %}
