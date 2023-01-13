@@ -1,0 +1,44 @@
+""" 
+PEP 257
+
+    def get_queryset(self):
+        # Returns the query to use in this class
+        return self.model.objects.filter(state = True)
+        
+    def get_queryset(self):
+        # Returns the query to use in this class
+        
+        Arguments: 
+        self = represents the instance of the class, we can access to its properties and methods
+        request = request sent from browser
+        
+        return self.model.objects.filter(state = True)
+        
+SPHINX    
+    
+    def get_queryset(self):
+        # Returns the query to use in this class
+                
+        :param request: = request sent from browser
+        :type request: = dict
+        :return: a query
+        :rtype: queryset
+        
+        return self.model.objects.filter(state = True)
+        
+GOOGLE PYTHON     
+    
+    def get_queryset(self):
+        # Returns the query to use in this class
+        
+        
+        Arguments: 
+        self = represents the instance of the class, we can access to its properties and methods
+        request = request sent from browser
+        
+        Returns 
+        a query
+        
+        return self.model.objects.filter(state = True)
+
+"""

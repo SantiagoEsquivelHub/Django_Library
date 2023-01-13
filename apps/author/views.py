@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView, ListView, UpdateView, CreateView, DeleteView
 from django.urls import reverse_lazy
-from .forms import *
 from .models import *
+from .forms import *
 
 # Create your views here.
 """ 
@@ -12,8 +12,81 @@ from .models import *
     3. options()
 """
 
+
 class Home(TemplateView):
+    # Class that renders system index
     template_name = 'index.html'
+
+
+class ListAuthor(View):
+    """ 
+    Contains the logic to list authors
+
+    :param model: Model to use in the class
+    :type model: Model
+    :param form_class: Django's Form relating to model
+    :type model: DjangoForm
+    :param template_name: Template to use in the class
+    :type template_name: str 
+
+    """
+
+    model = Author
+    form_class = AuthorForm
+    template_name = 'author/list_author.html'
+    context_object_name = 'authors'
+
+    def get_queryset(self):
+        """
+        Returns the query to use in this class
+
+        :return: a query
+        :rtype: queryset
+
+        """
+        
+        return self.model.objects.filter(state=True)
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns a context to send to its template
+
+        :return: a context
+        :rtype: dist
+
+        """
+
+        context = {}
+        context["authors"] = self.get_queryset()
+        context["form"] = self.form_class
+        return context
+
+    def get(self, request, *args, **kwargs):
+        """
+        Renders a template with a given context 
+
+        :return: render
+        :rtype: func
+
+        """
+        
+        return render(request, self.template_name, self.get_context_data())
+
+    def post(self, request, *args, **kwargs):
+        """
+        Redirect to a template, if the given form is valid
+
+        :return: redirect
+        :rtype: func
+
+        """
+        
+        form = self.form_class(request.POST)
+
+        if form.is_valid:
+            form.save()
+            return redirect('author:list_book')
+
 
 class CreateAuthor(CreateView):
     model = Author
@@ -21,96 +94,212 @@ class CreateAuthor(CreateView):
     template_name = 'author/create_author.html'
     success_url = reverse_lazy('author:list_author')
 
+    """ 
+    Contains the logic to CREATE an author
+    
+    :param model: Model to use in the class
+    :type model: Model
+    :param form_class: Django's Form relating to model
+    :type model: DjangoForm
+    :param template_name: Template to use in the class
+    :type template_name: str 
+    :param success_url: URL to render if an author was created successfully
+    :type success_url: func
+    
+    """
 
-class ListAuthor(View):
-    model = Author
-    form_class = AuthorForm
-    template_name = 'author/list_author.html'
-    context_object_name = 'authors'
-        
-    def get_queryset(self):
-        return self.model.objects.filter(state = True)
-    
-    def get_context_data(self, **kwargs):
-        context = {}
-        context["authors"] = self.get_queryset() 
-        context["form"] = self.form_class
-        return context
-    
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, self.get_context_data())
-    
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        
-        if form.is_valid:
-            form.save()
-            return redirect('author:list_book')
 
 class EditAuthor(UpdateView):
     model = Author
     template_name = 'author/edit_author.html'
     form_class = AuthorForm
     success_url = reverse_lazy('author:list_author')
-        
+
+    """ 
+    Contains the logic to EDIT an author
     
+    :param model: Model to use in the class
+    :type model: Model
+    :param form_class: Django's Form relating to model
+    :type model: DjangoForm
+    :param template_name: Template to use in the class
+    :type template_name: str 
+    :param success_url: URL to render if an author was edited successfully
+    :type success_url: func
+    
+    """
+
+
 class DeleteAuthor(DeleteView):
     model = Author
-    # success_url = reverse_lazy('author:list_author')
 
-    """ Logic deleting """
+    """ 
+    Contains the logic to DELETE an author
+    
+    :param model: Model to use in the class
+    :type model: Model
+  
+    """
+
     def post(self, request, pk, *args, **kwargs):
+        """ 
+        DELETE LOGICALLY an author
+
+        :param request: request sent from browser
+        :type request: request
+        :param pk: Author's primary key
+        :type pk: int
+        :return: redirect
+        :rtype: func
+
+        """
+
         author = Author.objects.get(id=pk)
         author.state = False
         author.save()
         return redirect('author:list_author')
 
+
 class ListBook(View):
+    """ 
+    Contains the logic to list books
+
+    :param model: Model to use in the class
+    :type model: Model
+    :param form_class: Django's Form relating to model
+    :type model: DjangoForm
+    :param template_name: Template to use in the class
+    :type template_name: str 
+
+    """
+    
     model = Book
     form_class = BookForm
     template_name = 'book/list_book.html'
 
     def get_queryset(self):
-        return self.model.objects.filter(state = True)
-    
+        """
+        Returns the query to use in this class
+
+        :return: a query
+        :rtype: queryset
+
+        """
+        
+        return self.model.objects.filter(state=True)
+
     def get_context_data(self, **kwargs):
+        """
+        Returns a context to send to its template
+
+        :return: a context
+        :rtype: dist
+
+        """
+        
         context = {}
-        context["books"] = self.get_queryset() 
+        context["books"] = self.get_queryset()
         context["form"] = self.form_class
         return context
-    
+
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, self.get_context_data())
-    
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+        """
+        Renders a template with a given context 
+
+        :return: render
+        :rtype: func
+
+        """
         
+        return render(request, self.template_name, self.get_context_data())
+
+    def post(self, request, *args, **kwargs):
+        """
+        Redirect to a template, if the given form is valid
+
+        :return: redirect
+        :rtype: func
+
+        """
+        
+        form = self.form_class(request.POST)
+
         if form.is_valid:
             form.save()
             return redirect('author:list_book')
-    
-class CreateBook(CreateView): 
+
+
+class CreateBook(CreateView):
     model = Book
     form_class = BookForm
     template_name = 'book/create_book.html'
     success_url = reverse_lazy('author:list_book')
+    
+    """ 
+    Contains the logic to CREATE a book
+    
+    :param model: Model to use in the class
+    :type model: Model
+    :param form_class: Django's Form relating to model
+    :type model: DjangoForm
+    :param template_name: Template to use in the class
+    :type template_name: str 
+    :param success_url: URL to render if a book was edited successfully
+    :type success_url: func
+    
+    """
+
 
 class EditBook(UpdateView):
     model = Book
     template_name = 'book/edit_book.html'
     form_class = BookForm
     success_url = reverse_lazy('author:list_book')
+
+    """ 
+    Contains the logic to EDIT a book
     
-    """ def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context """
+    :param model: Model to use in the class
+    :type model: Model
+    :param form_class: Django's Form relating to model
+    :type model: DjangoForm
+    :param template_name: Template to use in the class
+    :type template_name: str 
+    :param success_url: URL to render if a book was edited successfully
+    :type success_url: func
     
+    """
+
+
 class DeleteBook(DeleteView):
     model = Book
     template_name = 'book/book_confirm_delete.html'
+    """ 
+    Contains the logic to DELETE LOGICALLY a book
     
+    :param model: Model to use in the class
+    :type model: Model
+    :param template_name: Template to use in the class
+    :type template_name: str
+    
+    """
+
     def post(self, request, pk, *args, **kwargs):
+        """ 
+        DELETE LOGICALLY a book
+
+        :param request: request sent from browser
+        :type request: request
+        :param pk: Author's primary key
+        :type pk: int
+        :return: redirect
+        :rtype: func
+
+        """
+        
         book = Book.objects.get(id=pk)
         book.state = False
         book.save()
         return redirect('author:list_book')
+    
+    

@@ -51,21 +51,13 @@ Biblioteca.dev | Authors list
 </table>
     
 {% else %}
-   {% comment %}  <h2>Does not exist registered authors</h2>
-    <button>  
-        <a href="{% url 'author:create_author' %}">Create</a>
-    </button> {% endcomment %}
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <strong class="card-title">Does not exist registered authors </strong>
-          </div> 
-              <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="abrir_modal_creacion('{% url 'author:create_author' %}');">
-                  Register an Author</button>
-              </div>
-      </div>
+<div class="card p-2">
+  <div class="row">
+    <div class="col-md-8">
+      <strong class="card-title">Does not exist registered authors...</strong>
+    </div>
   </div>
+</div>
 {% endif %}
       </tbody>
     </table>
