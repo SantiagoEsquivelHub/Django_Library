@@ -16,8 +16,8 @@ Biblioteca.dev | Authors list
         <strong class="card-title">Authors list</strong>
       </div>
       <div class="col-md-4">
-        <a type="button" class="btn btn-primary" href="{% url 'author:create_author' %}">
-          Register an Author</a>
+        <button type="button" class="btn btn-primary" onclick="abrir_modal_creacion('{% url 'author:create_author' %}');">
+          Register an Author</button>
       </div>
     </div>
 
@@ -42,8 +42,8 @@ Biblioteca.dev | Authors list
             <td>{{author.last_name}}</td>
             <td>{{author.nacionality}}</td>
             <td>
-                <a type="button" class="btn btn-primary" href="{% url 'author:edit_author'  author.id%}">Edit</a>
-                <a type="button" class="btn btn-danger" href="{% url 'author:delete_author' author.id %}">Delete</a>
+                <button type="button" class="btn btn-primary" onclick="abrir_modal_creacion('{% url 'author:edit_author'  author.id%}');">Edit</button>
+                <button type="button" class="btn btn-danger" onclick="abrir_modal_creacion('{% url 'author:delete_author' author.id %}');">Delete</button>
             </td>
         </tr>
     {% endfor %}

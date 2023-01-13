@@ -22,20 +22,36 @@ class CreateAuthor(CreateView):
     success_url = reverse_lazy('author:list_author')
 
 
-class ListAuthor(ListView):
+class ListAuthor(View):
     model = Author
+    form_class = AuthorForm
     template_name = 'author/list_author.html'
-    queryset = Author.objects.filter(state = True)
     context_object_name = 'authors'
         
+    def get_queryset(self):
+        return self.model.objects.filter(state = True)
+    
+    def get_context_data(self, **kwargs):
+        context = {}
+        context["authors"] = self.get_queryset() 
+        context["form"] = self.form_class
+        return context
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_context_data())
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        
+        if form.is_valid:
+            form.save()
+            return redirect('author:list_book')
 
 class EditAuthor(UpdateView):
     model = Author
-    template_name = 'author/create_author.html'
+    template_name = 'author/edit_author.html'
     form_class = AuthorForm
     success_url = reverse_lazy('author:list_author')
-    
-    
         
     
 class DeleteAuthor(DeleteView):

@@ -1,9 +1,9 @@
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <strong class="card-title">Author's Registration</strong>
+            <strong class="card-title">Author's Edit {{ object }}</strong>
         </div>
-        <form action="{% url 'author:create_author' %}" method="post">
+        <form action="{% url 'author:edit_author' object.id %}" method="post">
             {% csrf_token %}
             <div class="modal-body">
                 <div id="errores">
