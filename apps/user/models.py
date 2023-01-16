@@ -39,7 +39,7 @@ class User(AbstractBaseUser):
     name = models.CharField('Name', max_length=50)
     last_name = models.CharField('Last name', max_length=50)
     image = models.ImageField('Profile image', upload_to='profile/', blank= True, null= True, max_length=200)
-    activate_user = models.BooleanField(default = True)
+    active_user = models.BooleanField(default = True)
     admin_user = models.BooleanField(default = False)
     objects = UserManager()
     
@@ -56,5 +56,5 @@ class User(AbstractBaseUser):
         return True
     
     @property
-    def is_superuser(self):
+    def is_staff(self):
         return self.admin_user

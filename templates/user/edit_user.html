@@ -1,0 +1,21 @@
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <strong class="card-title">User's Edit: {{object}}</strong>
+        </div>
+        <form id="edition_form" action="{% url 'user:edit_user' object.pk %}" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div id="erroresEdicion">
+                </div>
+                {{ form.as_p }}
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" data-dismiss="modal" onclick="cerrar_modal_edicion();">Cancel</button>
+                <button id="boton_creacion" class="btn btn-primary" type="button" onclick="editUser()">Edit</button>
+            </div>
+        </form>
+    </div>
+  </div>
+  
+  

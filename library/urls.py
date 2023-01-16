@@ -24,6 +24,7 @@ from apps.user.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('author/', include(('apps.author.urls','author'))),
+    path('user/', include(('apps.user.urls','user'))),
     path('', login_required(Home.as_view()), name='index'),
     path('accounts/login/', Login.as_view(), name="login"),
     path('logout/', logout_then_login, name="logout")
