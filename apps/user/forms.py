@@ -11,6 +11,39 @@ class LoginForm(AuthenticationForm):
         self.fields['password'].widget.attrs['placeholder'] = 'Password'
         
         
+class EditUserForm(forms.ModelForm):
+    
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'name', 'last_name']
+        widgets = {
+            'email': forms.EmailInput(
+                attrs= {
+                    'class': 'form-control',
+                    'placeholder': 'Enter your email',
+                }
+            ),
+            'name': forms.TextInput(
+                attrs= {
+                    'class': 'form-control',
+                    'placeholder': 'Enter your names',
+                }
+            ),
+            'last_name': forms.TextInput(
+                attrs= {
+                    'class': 'form-control',
+                    'placeholder': 'Enter your last names'
+                }
+            ),
+            'username': forms.TextInput(
+                attrs= {
+                    'class': 'form-control',
+                    'placeholder': 'Enter your user name',
+                }
+            ),
+        }
+        
+        
 class UserForm(forms.ModelForm):
     """ 
     User Registration Form 

@@ -78,7 +78,7 @@ class RegisterUser(CreateView):
 
 class EditUser(UpdateView):
     model = User
-    form_class = UserForm
+    form_class = EditUserForm
     template_name = "user/edit_user.html"
     
     def post(self, request, *args, **kwargs):
