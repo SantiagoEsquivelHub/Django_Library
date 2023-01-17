@@ -9,8 +9,15 @@ from django.contrib.auth import login
 from django.core.serializers import serialize
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.shortcuts import redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .forms import *
 from .models import *
+from .mixins import *
+
+class Home(LoginRequiredMixin, TemplateView):
+    # Class that renders system index
+    template_name = 'index.html'
+
 
 class Login(FormView):
     template_name = 'login.html'
@@ -28,14 +35,17 @@ class Login(FormView):
     def form_valid(self, form):
         login(self.request, form.get_user())
         return super(Login, self).form_valid(form)
+    
+class HomeUser(LoginAndStaffMixin, ValidateRequiredUsersPermissionsMixin, TemplateView):
+    template_name = "user/list_user.html"
 
-class ListUser(ListView):
+class ListUser(LoginAndStaffMixin, ValidateRequiredUsersPermissionsMixin, ListView):
     model = User
     template_name = 'user/list_user.html'
     context_object_name = 'users'
 
     def get_queryset(self):
-        return self.model.objects.filter(active_user=True)
+        return self.model.objects.filter(is_active=True)
 
     def get(self, request, *args, **kwargs):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -45,7 +55,7 @@ class ListUser(ListView):
             return redirect("user:list_user")
 
 
-class RegisterUser(CreateView):
+class RegisterUser(LoginAndStaffMixin, ValidateRequiredUsersPermissionsMixin, CreateView):
     model = User
     form_class = UserForm
     template_name = 'user/create_user.html'
@@ -76,7 +86,7 @@ class RegisterUser(CreateView):
         else:
             return redirect("user:home_user")
 
-class EditUser(UpdateView):
+class EditUser(LoginAndStaffMixin, ValidateRequiredUsersPermissionsMixin, UpdateView):
     model = User
     form_class = EditUserForm
     template_name = "user/edit_user.html"
@@ -89,7 +99,7 @@ class EditUser(UpdateView):
                 message = f"{self.model.__name__} edited successfully" 
                 error = "There's not error!"
                 response = JsonResponse({"message": message, "error": error})
-                response.status_code = 201 # Created
+                response.status_code = 200 # OK
                 return response
             else:
                 message = f"{self.model.__name__} can not be edited" 
@@ -99,3 +109,22 @@ class EditUser(UpdateView):
                 return response
         else:
             return redirect("user:home_user")
+        
+class DeleteUser(LoginAndStaffMixin, ValidateRequiredUsersPermissionsMixin, DeleteView):
+    model = User
+    template_name = "user/delete_user.html"
+
+    def post(self, request, *args, **kwargs):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            user = self.get_object()
+            user.is_active = False
+            user.save()
+            message = f"{self.model.__name__} deleted successfully" 
+            error = "There's not error!"
+            response = JsonResponse({"message": message, "error": error})
+            response.status_code = 200 # OK
+            return response
+        else:
+            return redirect("user:home_user")
+        
+        

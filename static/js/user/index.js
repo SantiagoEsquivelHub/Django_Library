@@ -17,7 +17,7 @@ const listUsers = () => {
                 row += "<td>" + response[i]["fields"]["email"] + "</td>"
                 row += "<td>" + "<button type='button' class='btn btn-primary tableButton'"
                 row += 'onclick="abrir_modal_edicion(\'/user/edit_user/'+response[i]['pk']+'/\');">Edit</button>'
-                row += "<button type='button' class='btn btn-danger tableButton'>Cancel</button>" + "</td>"
+                row += '<button type="button" class="btn btn-danger tableButton" onclick="abrir_modal_eliminacion(\'/user/delete_user/'+response[i]['pk']+'/\');">Delete</button>' + "</td>"
                 row += "</tr>"
                 $("#users_table tbody").append(row)
             }
@@ -86,6 +86,24 @@ const editUser = () => {
     })
 }
 
+const deleteUser = (pk) => {
+    activarBoton()
+    $.ajax({
+        data: {
+            csrfmiddlewaretoken: $("[name= 'csrfmiddlewaretoken']").val()
+        },
+        url: '/user/delete_user/'+pk+'/',
+        type: 'post',
+        success: (response) => {
+            notificacionSuccess(response.message)
+            listUsers()
+            cerrar_modal_eliminacion();
+        },
+        error: (error) => {
+            notificacionError(error.responseJSON.message)
+        }
+    })
+}
 
 
 $(document).ready(() => listUsers())

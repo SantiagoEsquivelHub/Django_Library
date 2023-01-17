@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models.signals import post_save
 # Create your models here.
 
 class Author(models.Model):
@@ -33,6 +33,18 @@ class Book(models.Model):
         
     def __str__(self):
         return self.title
+    
+    
+def remove_relationship_author_book(sender, instance, **kwargs):
+    if instance.state == False:
+        author_id = instance.id
+        books = Book.objects.filter(author_id = author_id)
+        
+        for book in books:
+            book.author_id.remove(author_id)
+        
+    
+post_save.connect(remove_relationship_author_book, sender = Author)
     
 # class Reservation(models.Model):
 #     """Model definition for Reserva."""

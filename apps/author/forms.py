@@ -55,10 +55,10 @@ class AuthorForm(forms.ModelForm):
 
 class BookForm(forms.ModelForm):
     
-     """ def __init__(self, *args, **kwargs):
+     def __init__(self, *args, **kwargs):
          super().__init__(*args, **kwargs)
-         self.fields['author_id'].queryset = Author.objects.filter(state = True) """
-    
+         self.fields['author_id'].queryset = Author.objects.filter(state = True)
+     
 
      class Meta:
          model = Book

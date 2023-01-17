@@ -13,11 +13,6 @@ from .forms import *
 """
 
 
-class Home(TemplateView):
-    # Class that renders system index
-    template_name = 'index.html'
-
-
 class ListAuthor(View):
     """ 
     Contains the logic to list authors
