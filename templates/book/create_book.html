@@ -4,7 +4,7 @@
         <div class="modal-header">
             <strong class="card-title">Book's Registration</strong>
         </div>
-        <form action="{% url 'author:create_book' %}" method="post">
+        <form action="{% url 'author:create_book' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="modal-body">
                 <div id="errores">

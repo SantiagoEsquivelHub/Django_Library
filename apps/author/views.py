@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from django.views.generic import View, TemplateView, ListView, UpdateView, CreateView, DeleteView
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.views.generic import View, TemplateView, ListView, UpdateView, CreateView, DeleteView, DetailView
 from django.urls import reverse_lazy
 from .models import *
 from .forms import *
@@ -153,8 +154,7 @@ class DeleteAuthor(DeleteView):
         author.state = False
         author.save()
         return redirect('author:list_author')
-
-
+    
 class ListBook(View):
     """ 
     Contains the logic to list books
@@ -297,4 +297,52 @@ class DeleteBook(DeleteView):
         book.save()
         return redirect('author:list_book')
     
+class ListAvailableBook(ListView):
+    model = Book
+    paginate_by = 6
+    template_name = 'book/available_book.html'
     
+    def get_queryset(self):
+        queryset = self.model.objects.filter(state = True, stock__gte = 1)
+        return queryset
+    
+class ListReservation(ListView):
+    model = Reservation
+    paginate_by = 6
+    template_name = 'book/reserved_book.html'
+    
+    def get_queryset(self):
+        queryset = self.model.objects.filter(state = True, user = self.request.user)
+        return queryset
+    
+class DetailBook(DetailView):
+    model = Book
+    template_name = 'book/detail_book.html'
+    
+    def get(self, request, *args, **kwargs):
+        if self.get_object().stock > 0:
+            return render(request, self.template_name, {'object': self.get_object()})
+        return redirect('author:list_available_books')
+    
+class RegisterReservation(CreateView):
+    model = Reservation
+    success_url = reverse_lazy('author:list_available_books')
+    
+    def post(self, request, *args, **kwargs):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            book = Book.objects.filter(id = request.POST.get('book')).first()
+            user = User.objects.filter(id = request.POST.get('user')).first()
+            
+            if book and user and book.stock > 0:
+                new_reservation = self.model(
+                    book = book,
+                    user = user,
+                )
+                new_reservation.save()
+                message = f'{self.model.__name__} registered successfully'
+                error = "There's not error!"
+                response = JsonResponse({'message': message, 'error': error, 'url': self.success_url})
+                response.status_code = 201
+                print(response)
+                return response
+        return redirect('author:list_available_books')

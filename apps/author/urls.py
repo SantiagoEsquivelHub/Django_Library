@@ -11,5 +11,9 @@ urlpatterns = [
    path('create_book/', login_required(CreateBook.as_view()), name='create_book'),
    path('edit_book/<int:pk>', login_required(EditBook.as_view()), name='edit_book'),
    path('delete_book/<int:pk>', login_required(DeleteBook.as_view()), name='delete_book'),
-   
+   # GENERALS URLS
+   path('list-available-books/', ListAvailableBook.as_view(), name='list_available_books'),
+   path('list-reservation-books/', ListReservation.as_view(), name='list_reservation_books'),
+   path('detail-book/<int:pk>/', DetailBook.as_view(), name='detail_book'),
+   path('reserve-book/', RegisterReservation.as_view(), name='reserve_book'),
 ]

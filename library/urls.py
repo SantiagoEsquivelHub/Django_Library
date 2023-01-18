@@ -15,8 +15,9 @@ Including another URLconf
     template_name='registration/login.html'
 """
 from django.contrib.auth.views import logout_then_login
-from django.contrib.auth.decorators import login_required
-from django.urls import path, include
+from django.conf import settings
+from django.views.static import serve
+from django.urls import path, include, re_path
 from django.contrib import admin
 from apps.author.views import *
 from apps.user.views import *
@@ -28,4 +29,10 @@ urlpatterns = [
     path('', Home.as_view(), name='index'),
     path('accounts/login/', Login.as_view(), name="login"),
     path('logout/', logout_then_login, name="logout")
+]
+
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+    })
 ]

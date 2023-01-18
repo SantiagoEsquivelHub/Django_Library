@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from .models import *
 
 class AuthorForm(forms.ModelForm):
@@ -37,21 +38,19 @@ class AuthorForm(forms.ModelForm):
                  )
          }
          
-# class ReservationForm(forms.ModelForm):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         #self.fields['libro'].queryset = Libro.objects.filter(estado = True,cantidad__gte = 1)
+class ReservationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-#     class Meta:
-#         model = Reservation
-#         fields = '__all__'
+    class Meta:
+        model = Reservation
+        fields = '__all__'
     
-#     def clean_libro(self):
-#         libro = self.cleaned_data['book']
-#         if libro.cantidad < 1:
-#             raise ValidationError('No se puede reservar este libro, deben existir unidades disponibles.')
-
-#         return libro
+    def clean_book(self):
+        book = self.cleaned_data['book']
+        if book.stock < 1:
+            raise ValidationError('This book can not be reserved, there must be units available.')
+        return book
 
 class BookForm(forms.ModelForm):
     
@@ -62,7 +61,7 @@ class BookForm(forms.ModelForm):
 
      class Meta:
          model = Book
-         fields = ('title','author_id','publication_date', 'state')
+         fields = ('title','author_id','publication_date', 'state', 'description', 'image', 'stock')
          labels = {
              'title': "Book's title",
              'author_id': "Book's Authors",
