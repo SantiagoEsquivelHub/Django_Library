@@ -19,21 +19,18 @@ class AuthorForm(forms.ModelForm):
                  attrs= {
                      'class': 'form-control',
                      'placeholder': "Enter the name of the author",
-                     'id': 'name'
                  }
                  ),
              'last_name': forms.TextInput(
                  attrs= {
                      'class': 'form-control',
                      'placeholder': "Enter the last name of the author",
-                     'id': 'last_name'
                  }
                  ),
              'nacionality': forms.TextInput(
                  attrs= {
                      'class': 'form-control',
                      'placeholder': "Enter the nacionality of the author",
-                     'id': 'nacionality'
                  }
                  )
          }

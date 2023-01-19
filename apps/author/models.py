@@ -1,3 +1,5 @@
+import datetime
+from datetime import timedelta
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from apps.user.models import *
@@ -55,7 +57,11 @@ def reduce_stock(sender, instance, **kwargs):
     if book.stock > 0:
         book.stock -= 1
         book.save() 
-
+        
+def add_expiration_date(sender, instance, **kwargs):
+    if instance.expiration_date is None or instance.expiration_date == "":
+        instance.expiration_date = instance.creation_date + timedelta(days= instance.number_days)
+        instance.save()
 
         
 class Reservation(models.Model):
@@ -80,6 +86,9 @@ class Reservation(models.Model):
         """Unicode representation of Reserva."""
         return f'Book reservation {self.book} by {self.user}'
     
+        
+    
 post_save.connect(remove_relationship_author_book, sender = Author)
 post_save.connect(reduce_stock, sender = Reservation)
+post_save.connect(add_expiration_date, sender = Reservation)
     

@@ -17,7 +17,7 @@ Library.dev | Books list
       </div>
       <div class="col-md-4">
         <button class="btn btn-primary" onclick="abrir_modal_creacion('{% url 'author:create_book' %}');">
-          Register a Book</a>
+          Register a Book</button>
       </div>
     </div>
 
@@ -40,7 +40,7 @@ Library.dev | Books list
             <td>{{book.id}}</td>
             <td>{{book.title}}</td>
             <td>{{book.publication_date}}</td>
-            <td>{% for author in book.author_id.all%}
+            <td>{% for author in book.author_id.all %}
                 <li>{{author.name}}</li>
                 {% endfor %}
             </td>

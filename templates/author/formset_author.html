@@ -1,0 +1,95 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block titulo %}
+Library.dev | Formset Author
+{% endblock titulo %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lib/datatable/dataTables.bootstrap.min.css' %}">
+{% endblock extra_css %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>
+                    <strong>Creation of authors with FormSets</strong>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-2">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.management_form }}
+            {% for form_unit in form %}
+            <div id="authors_form" class="card m-3">
+                {{ form_unit }}
+            </div>
+            <br>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <br>
+        <button type="button" class="btn btn-primary" onclick="add_inputs();">Add</button>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block extrajs %}
+<script>
+    const add_inputs = () => {
+        let total_forms = document.querySelector('#id_form-TOTAL_FORMS')
+        let div_container = document.createElement('div')
+        div_container.setAttribute('class', "mt-5") 
+        div_container.id = total_forms.value
+
+        //new label and input to name
+        let new_label_name = document.createElement('label')
+        new_label_name.innerHTML = "Author's name:"
+        let new_input_name = document.querySelector('#id_form-0-name').cloneNode(true)
+        new_input_name.name = "id_form-" + total_forms.value + "-name"
+        new_input_name.name = "form-" + total_forms.value + "-name"
+
+        //new label and input to last name
+        let new_label_last_name = document.createElement('label')
+        new_label_last_name.innerHTML = "Author's last_name:"
+        let new_input_last_name = document.querySelector('#id_form-0-last_name').cloneNode(true)
+        new_input_last_name.name = "id_form-" + total_forms.value + "-last_name"
+        new_input_last_name.name = "form-" + total_forms.value + "-last_name"
+
+        //new label and input to nationality
+        let new_label_nationality = document.createElement('label')
+        new_label_nationality.innerHTML = "Author's nacionality:"
+        let new_input_nationality = document.querySelector('#id_form-0-nacionality').cloneNode(true)
+        new_input_nationality.name = "id_form-" + total_forms.value + "-nacionality"
+        new_input_nationality.name = "form-" + total_forms.value + "-nacionality"
+
+        // add created elements
+
+
+        div_container.appendChild(new_label_name)
+        div_container.appendChild(new_input_name)
+        div_container.appendChild(new_label_last_name)
+        div_container.appendChild(new_input_last_name)
+        div_container.appendChild(new_label_nationality)
+        div_container.appendChild(new_input_nationality)
+
+        document.querySelector('#authors_form').appendChild(div_container)
+
+       /* document.querySelector('#authors_form').appendChild(new_label_name)
+        document.querySelector('#authors_form').appendChild(new_input_name)
+        document.querySelector('#authors_form').appendChild(new_label_last_name)
+        document.querySelector('#authors_form').appendChild(new_input_last_name)
+        document.querySelector('#authors_form').appendChild(new_label_nationality)
+        document.querySelector('#authors_form').appendChild(new_input_nationality)*/
+
+        total_forms.value = parseInt(total_forms.value) + 1
+    }
+
+</script>
+{% endblock extrajs %}

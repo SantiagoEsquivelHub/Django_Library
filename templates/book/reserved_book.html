@@ -1,0 +1,98 @@
+
+
+{% extends 'index.html' %}
+{% load static %}
+{% block titulo %}
+Library.dev | List Reserved Books
+{% endblock titulo %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lib/datatable/dataTables.bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'fullcalendar/lib/main.css' %}">
+{% endblock extra_css %}
+{% block body %}
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-8">
+        <strong class="card-title">List Reserved Books</strong>
+      </div>
+    </div>
+
+  </div>
+  <div class="table-stats order-table ov-h">
+        {% if reservations %}
+        <table id="" class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Book</th>
+            <th>User</th>
+            <th>Number of days</th>
+            <th>Reservation date</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for reservation in reservations %}
+        <tr>
+            <td>{{reservation.id}}</td>
+            <td>{{reservation.book}}</td>
+            <td>{{reservation.user}}</td>
+            <td>{{reservation.number_days}}</td>
+            <td>{{reservation.creation_date}}</td>            S
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+    
+{% else %}
+<div class="card p-2">
+    <div class="row">
+      <div class="col-md-8">
+        <strong class="card-title">Does not exist books' reservations...</strong>
+      </div>
+    </div>
+</div>
+
+{% endif %}
+
+  </div>
+</div>
+<div class="modal fade" id="creacion" role="dialog">
+
+</div>
+<div class="modal fade" id="edicion" role="dialog">
+
+</div>
+<div class="modal fade" id="eliminacion" role="dialog">
+
+</div>
+
+<div id="calendar" class="card" style="padding: 10px;">
+
+</div>
+
+
+{% endblock body %}
+{% block extrajs %}
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'js/libro/libro.js' %}"></script>
+<script src="{% static 'fullcalendar/lib/main.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        let calendarUI = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarUI, {
+          events: [
+          {% for reservation in reservations %}
+              {
+                 title: "{{ reservation.book.title }}",
+                 start: "{{ reservation.creation_date | date:'Y-m-d'}}",
+                 end: "{{ reservation.expiration_date | date:'Y-m-d'}}",
+              },
+          {% endfor %}
+          ]
+        })
+        calendar.render()
+    })
+</script>
+{% endblock extrajs %}

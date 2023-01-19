@@ -310,9 +310,20 @@ class ListReservation(ListView):
     model = Reservation
     paginate_by = 6
     template_name = 'book/reserved_book.html'
+    context_object_name = 'reservations'
     
     def get_queryset(self):
         queryset = self.model.objects.filter(state = True, user = self.request.user)
+        return queryset
+    
+class ListExpiredReservation(ListView):
+    model = Reservation
+    paginate_by = 6
+    template_name = 'book/expired_reserved_book.html'
+    context_object_name = 'expired_reservations'
+    
+    def get_queryset(self):
+        queryset = self.model.objects.filter(state = False, user = self.request.user)
         return queryset
     
 class DetailBook(DetailView):

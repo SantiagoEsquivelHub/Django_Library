@@ -4,6 +4,7 @@
 Library.dev | {{ object }}
 {% endblock titulo %}
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lib/datatable/dataTables.bootstrap.min.css' %}">
 {% endblock extra_css %}
 {% block body %}
 <div class="card">
@@ -62,11 +63,13 @@ Library.dev | {{ object }}
             url:"{% url 'author:reserve_book' %}",
             type: 'post',
             success:(response)=>{
-                notificacionSuccess(response.mensaje);
-                window.location.href = response.url;
+                notificacionSuccess(response.message);
+                setTimeout(() => {
+                    window.location.href = response.url;
+                  }, "3000")
             },
             error:(error)=>{
-                notificacionError(error.responseJSON.mensaje);
+                notificacionError(error.responseJSON.message);
             }
         });
     }

@@ -6,7 +6,7 @@ from import_export.admin import ImportExportModelAdmin
 
 class ReservationAdmin(admin.ModelAdmin):
     form = ReservationForm
-    list_display = ['book', 'user', 'creation_date', 'state']
+    list_display = ['book', 'user', 'creation_date', 'expiration_date', 'state']
 
 class AuthorResource(resources.ModelResource):
     class Meta:
