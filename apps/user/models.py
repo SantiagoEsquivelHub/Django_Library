@@ -56,8 +56,8 @@ class UserManager(BaseUserManager):
             return superuser """
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField('User name', unique=True, max_length=100)
     email = models.EmailField('Email', max_length=254, unique=True)
+    username = models.CharField('User name', unique=True, max_length=100)
     name = models.CharField('Name', max_length=50)
     last_name = models.CharField('Last name', max_length=50)
     image = models.ImageField('Profile image', upload_to='profile/', blank= True, null= True, max_length=200)

@@ -16,8 +16,8 @@ const listUsers = () => {
                 row += "<td>" + response[i]["fields"]["last_name"] + "</td>"
                 row += "<td>" + response[i]["fields"]["email"] + "</td>"
                 row += "<td>" + "<button type='button' class='btn btn-primary tableButton'"
-                row += 'onclick="abrir_modal_edicion(\'/user/edit_user/'+response[i]['pk']+'/\');">Edit</button>'
-                row += '<button type="button" class="btn btn-danger tableButton" onclick="abrir_modal_eliminacion(\'/user/delete_user/'+response[i]['pk']+'/\');">Delete</button>' + "</td>"
+                row += 'onclick="abrir_modal_edicion(\'/user/edit_user/' + response[i]['pk'] + '/\');">Edit</button>'
+                row += '<button type="button" class="btn btn-danger tableButton" onclick="abrir_modal_eliminacion(\'/user/delete_user/' + response[i]['pk'] + '/\');">Delete</button>' + "</td>"
                 row += "</tr>"
                 $("#users_table tbody").append(row)
             }
@@ -92,7 +92,7 @@ const deleteUser = (pk) => {
         data: {
             csrfmiddlewaretoken: $("[name= 'csrfmiddlewaretoken']").val()
         },
-        url: '/user/delete_user/'+pk+'/',
+        url: '/user/delete_user/' + pk + '/',
         type: 'post',
         success: (response) => {
             notificacionSuccess(response.message)
@@ -106,4 +106,37 @@ const deleteUser = (pk) => {
 }
 
 
-$(document).ready(() => listUsers())
+// $(document).ready(() => listUsers())
+
+$(document).ready(() => {
+
+    $('#users_table').DataTable({
+        "serverSide": true,
+        "processing": true,
+        "ajax": (data, callback, settings) => {
+            let filter_column = data.columns[data.order[0].column].data
+            console.log(data)
+            $.get('/user/list_user', {
+                limit: data.length,
+                start: data.start,
+                filter: data.search.value,
+                order_by: filter_column,
+                dir: data.order[0].dir == 'asc' ? 'desc' : 'asc'
+            }, (res) => {
+                console.log(res)
+                callback({
+                    recordsTotal: res.length,
+                    recordsFiltered: res.length,
+                    data: res.objects,
+                })
+            })
+        },
+        "columns": [
+            { 'data': "id" },
+            { 'data': "username" },
+            { 'data': "name" },
+            { 'data': "last_name" },
+            { 'data': "email" },
+        ],
+    })
+})

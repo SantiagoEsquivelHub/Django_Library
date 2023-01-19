@@ -45,12 +45,32 @@ class ListUser(LoginAndStaffMixin, ValidateRequiredUsersPermissionsMixin, ListVi
     context_object_name = 'users'
 
     def get_queryset(self):
-        return self.model.objects.filter(is_active=True)
+        dir = ''
+        if self.request.GET.get('dir') == 'asc': dir = '' 
+        else: dir = '-' 
+              
+        return self.model.objects.filter(is_active=True, 
+                                         name__contains = self.request.GET.get('filter'),
+                                         last_name__contains = self.request.GET.get('filter'),
+                                         email__contains = self.request.GET.get('filter'),
+                                         ).values('id', 'username', 'name', 'last_name', 'email'
+                                                  ).order_by(dir + self.request.GET.get('order_by'))
 
     def get(self, request, *args, **kwargs):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            data = serialize("json", self.get_queryset())
-            return HttpResponse(data, "application/json")
+            start = int(request.GET.get('start'))
+            limit = int(request.GET.get('limit'))
+            data_users = self.get_queryset()
+            list_users = []
+            for index, value in enumerate(data_users[start:start+limit], start):
+                list_users.append(value)
+                
+            data = {
+                'length': data_users.count(),
+                'objects': list_users
+            }
+            # data = serialize("json", self.get_queryset())
+            return HttpResponse(json.dumps(data), "application/json")
         else:
             return redirect("user:list_user")
 
